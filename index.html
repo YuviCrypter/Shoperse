@@ -116,6 +116,7 @@
       var NameOfUser;
       var recordOfUser;
       var AvatarOfUser;
+      var ProfileOfUser;
       console.log("works");
       // Function which receives a message from Unity
       function receiveMessageFromUnity(txt) {
@@ -135,6 +136,7 @@
         records.forEach( function(record) {
         NameOfUser = record.get('Name');
         AvatarOfUser = record.get('URL');
+        ProfileOfUser = record.get('UserPicURL');
         recordOfUser = record.getId();
         console.log(AvatarOfUser);
         sendMessageToUnity();
@@ -152,6 +154,7 @@ if (err) { console.error(err); return; }
         //  const txtMessage = document.getElementById("txtMessage");
          // Get the message
         var message = AvatarOfUser;
+        var dpurl = ProfileOfUser;
          // Clear the input field
         //  txtMessage.value = "";
         console.log(message);
@@ -161,6 +164,11 @@ if (err) { console.error(err); return; }
             "[Bridge]",
             "ReceiveMessageFromPage",
             message
+         );
+         gameInstance.SendMessage(
+            "[Bridge]",
+            "ReceiveProfileFromPage",
+            dpurl
          );
       }
 
@@ -185,9 +193,9 @@ if (err) { console.error(err); return; }
       }
    </script>
     <div id="popup" class="popup">
-      <iframe id="frame" src="" style="position:fixed; height: 80vh; width:80vw; z-index:1; "></iframe>
+      <iframe id="frame" src="" style="position:fixed; height: 80vh; width:80vw; "></iframe>
       <!-- <button id="popupclose" onclick="ClosePopup()" style="z-index: 1; height:40px;width:40px; transform: translate(38vw,-34vh);  display: inline-block; content: '\00d7';  background-image: url(close.png); background-size: cover; background-color: rgba(255, 255, 255, 0); border:none;"></button> -->
-      <div onclick="ClosePopup()" class="close-btn" style="z-index: 2; position: fixed; height:40px;width:40px; "></div>
+      <div onclick="ClosePopup()" class="close-btn" style="z-index: 1; position: fixed; height:40px;width:40px; "></div>
       <button onclick="ClosePopup()" style="position:fixed; height: 100vh; width:100vw; background-color:rgba(255, 255, 255, 0); "></button>
     </div>
   </body>
