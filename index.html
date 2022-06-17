@@ -8,20 +8,31 @@
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
+    <div style="display:flex">
+      <div id="full">
+        <div id="unity-container" class="unity-desktop">
+          <canvas id="unity-canvas" width=960 height=600></canvas>
+          <div id="unity-loading-bar">
+            <div id="unity-logo"></div>
+            <div id="unity-progress-bar-empty">
+              <div id="unity-progress-bar-full"></div>
+            </div>
+          </div>
+          <div id="unity-warning"> </div>
+          <!-- <div id="unity-footer">
+            <div id="unity-webgl-logo"></div>
+            <div id="unity-fullscreen-button"></div>
+            <div id="unity-build-title">Shoperse</div>
+          </div> -->
+        </div>
+        <div id="popup" class="popup">
+          <iframe id="frame" src="" style="position:fixed; height: 80vh; width:80vw; z-index:1; "></iframe>
+          <!-- <button id="popupclose" onclick="ClosePopup()" style="z-index: 1; height:40px;width:40px; transform: translate(38vw,-34vh);  display: inline-block; content: '\00d7';  background-image: url(close.png); background-size: cover; background-color: rgba(255, 255, 255, 0); border:none;"></button> -->
+          <div onclick="ClosePopup()" class="close-btn" style="z-index: 2; position: fixed; height:40px;width:40px; "></div>
+          <button onclick="ClosePopup()" style="position:fixed; height: 100vh; width:100vw; background-color:rgba(255, 255, 255, 0); "></button>
         </div>
       </div>
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-webgl-logo"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">Shoperse</div>
-      </div>
+      <div id="fullscreen-btn" class="fullscreen-btn" onclick="FullScreen()"></div>
     </div>
     <script src="airtable.js" ></script>
     <script>
@@ -103,9 +114,9 @@
         //  );
          
           loadingBar.style.display = "none";
-          fullscreenButton.onclick = () => {
-            unityInstance.SetFullscreen(1)
-          };
+          // fullscreenButton.onclick = () => {
+          //   unityInstance.SetFullscreen(1)
+          // };
         }).catch((message) => {
           alert(message);
         });
@@ -116,6 +127,7 @@
       var NameOfUser;
       var recordOfUser;
       var AvatarOfUser;
+      var ProfileOfUser;
       console.log("works");
       // Function which receives a message from Unity
       function receiveMessageFromUnity(txt) {
@@ -135,6 +147,7 @@
         records.forEach( function(record) {
         NameOfUser = record.get('Name');
         AvatarOfUser = record.get('URL');
+        ProfileOfUser = record.get('UserPicURL');
         recordOfUser = record.getId();
         console.log(AvatarOfUser);
         sendMessageToUnity();
@@ -152,6 +165,7 @@ if (err) { console.error(err); return; }
         //  const txtMessage = document.getElementById("txtMessage");
          // Get the message
         var message = AvatarOfUser;
+        var dpurl = ProfileOfUser;
          // Clear the input field
         //  txtMessage.value = "";
         console.log(message);
@@ -161,6 +175,11 @@ if (err) { console.error(err); return; }
             "[Bridge]",
             "ReceiveMessageFromPage",
             message
+         );
+         gameInstance.SendMessage(
+            "[Bridge]",
+            "ReceiveProfileFromPage",
+            dpurl
          );
       }
 
@@ -178,18 +197,22 @@ if (err) { console.error(err); return; }
         
         
       }
-
+      var elem = document.getElementById("full");
       function ClosePopup(){
         var popup = document.getElementById("popup");
         popup.style.visibility="hidden";
       }
+      function FullScreen(){
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE11 */
+          elem.msRequestFullscreen();
+        }
+      }
    </script>
-    <div id="popup" class="popup">
-      <iframe id="frame" src="" style="position:fixed; height: 80vh; width:80vw; z-index:1; "></iframe>
-      <!-- <button id="popupclose" onclick="ClosePopup()" style="z-index: 1; height:40px;width:40px; transform: translate(38vw,-34vh);  display: inline-block; content: '\00d7';  background-image: url(close.png); background-size: cover; background-color: rgba(255, 255, 255, 0); border:none;"></button> -->
-      <div onclick="ClosePopup()" class="close-btn" style="z-index: 2; position: fixed; height:40px;width:40px; "></div>
-      <button onclick="ClosePopup()" style="position:fixed; height: 100vh; width:100vw; background-color:rgba(255, 255, 255, 0); "></button>
-    </div>
+    
   </body>
 </html>
 
